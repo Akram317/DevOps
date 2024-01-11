@@ -10,7 +10,7 @@ FROM jenkins/jenkins:lts
 RUN mkdir -p /var/jenkins_home/scripts
 
 # Copy the Jenkins pipeline script to the appropriate location
-COPY scripts /var/jenkins_home/scripts/
+COPY ./scripts /var/jenkins_home/scripts/
 
 # Set the necessary permissions
 USER root

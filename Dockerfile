@@ -1,32 +1,20 @@
-# Use an official Jenkins image with Kubernetes support
-FROM jenkins/jenkins:lts
+# Use an official Node.js runtime as a parent image
+FROM node:14
 
-# Switch to root to install additional tools
-USER root
+# Set the working directory in the container
+WORKDIR /usr/src/app
 
-# Install Docker (if needed, adjust for your OS and distribution)
-RUN apt-get update && \
-    apt-get install -y apt-transport-https \
-                       ca-certificates \
-                       curl \
-                       gnupg2 \
-                       software-properties-common && \
-    curl -fsSL https://download.docker.com/linux/debian/gpg | apt-key add - && \
-    add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/debian $(lsb_release -cs) stable" && \
-    apt-get update && \
-    apt-get install -y docker-ce docker-ce-cli containerd.io && \
-    usermod -aG docker jenkins && \
-    apt-get clean && \
-    rm -rf /var/lib/apt/lists/*
+# Copy package.json and package-lock.json to the working directory
+COPY package*.json ./
 
-# Create a directory to store pipeline scripts
-RUN mkdir -p /var/jenkins_home/pipeline-scripts
+# Install app dependencies
+RUN npm install
 
-# Set the necessary permissions
-RUN chown -R jenkins:jenkins /var/jenkins_home/pipeline-scripts
+# Copy the application code into the container
+COPY . .
 
-# Switch back to the Jenkins user
-USER jenkins
+# Expose the port the app runs on
+EXPOSE 3000
 
-# Start Jenkins with the pipeline scripts directory as a volume
-CMD ["/sbin/tini", "--", "/usr/local/bin/jenkins.sh"]
+# Define the command to run your application
+CMD ["npm", "start"]

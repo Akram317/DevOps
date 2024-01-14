@@ -4,7 +4,7 @@ metadata:
   name: mern-ingress
 spec:
   rules:
-  - host: localhost  # Change this to a valid domain name
+  - host: 127.0.0.1  # Change this to a valid domain name
     http:
       paths:
       - path: /
